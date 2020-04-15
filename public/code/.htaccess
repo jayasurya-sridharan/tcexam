@@ -1,0 +1,8 @@
+AddDefaultCharset UTF-8
+php_value arg_separator.output "&amp;"
+php_value magic_quotes_gpc On
+php_value magic_quotes_runtime Off
+php_value magic_quotes_sybase Off
+php_value variables_order "EGPCS"
+php_value request_order "GPC"
+php_value display_errors off

@@ -67,9 +67,9 @@ if (isset($menu_mode) and ($menu_mode == 'upload')) {
                     break;
                 }
                 case 3: {
-                    // Custom TCExam XML format
+                    // Custom Easy Text format
                     require_once('../code/tce_import_custom.php');
-                    $qimp = new CustomQuestionImporter(K_PATH_CACHE.$uploadedfile);
+                    $qimp = F_EasyTextQuestionImporter(K_PATH_CACHE.$uploadedfile);
                     break;
                 }
             }
@@ -117,6 +117,7 @@ echo '<label for="type_tsv">TCExam TSV</label>'.K_NEWLINE;
 
 $custom_import = K_ENABLE_CUSTOM_IMPORT;
 if (!empty($custom_import)) {
+    echo '<br/>';
     echo '<input type="radio" name="type" id="type_custom" value="3" title="'.$custom_import.'"'.K_NEWLINE;
     if ($type == 3) {
         echo ' checked="checked"';
@@ -323,7 +324,7 @@ function F_TSVQuestionImporter($tsvfile)
                     if ($m = F_db_fetch_array($r)) {
                         // get existing question ID
                         $current_question_id = $m['question_id'];
-                        continue;
+                        continue 2;
                     }
                 } else {
                     F_display_db_error();

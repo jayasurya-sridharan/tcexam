@@ -47,6 +47,7 @@ require_once('../../shared/code/tce_functions_session.php');
 require_once('../../shared/code/tce_functions_otp.php');
 
 $logged = false; // the user is not yet logged in
+// var_dump($_SESSION);
 
 // --- read existing user's session data from database
 $PHPSESSIDSQL = F_escape_sql($db, $PHPSESSID);
@@ -54,8 +55,12 @@ $fingerprintkey = getClientFingerprint();
 $sqls = 'SELECT * FROM '.K_TABLE_SESSIONS.' WHERE cpsession_id=\''.$PHPSESSIDSQL.'\'';
 if ($rs = F_db_query($sqls, $db)) {
     if ($ms = F_db_fetch_array($rs)) { // the user's session already exist
-        // decode session data
         session_decode($ms['cpsession_data']);
+        // echo "Session Exists" . "<br\>";
+        // echo "Client Fingerprint: " . $fingerprintkey . "<br\>";
+        // echo "Session Fingerprint: " . $_SESSION['session_hash'] . "<br\>";
+
+        // decode session data
         // check for possible session hijacking
         if (K_CHECK_SESSION_FINGERPRINT and ((!isset($_SESSION['session_hash'])) or ($fingerprintkey != $_SESSION['session_hash']))) {
             // display login form
@@ -169,6 +174,7 @@ if (isset($_POST['logaction']) and ($_POST['logaction'] == 'login') and isset($_
     } else {
         // encode password
         $xuser_password = getPasswordHash($_POST['xuser_password']);
+        var_dump($xuser_password);
         // check One-Time-Password if enabled
         $otp = false;
         if (K_OTP_LOGIN) {
@@ -204,6 +210,7 @@ if (isset($_POST['logaction']) and ($_POST['logaction'] == 'login') and isset($_
             $sql = 'SELECT * FROM '.K_TABLE_USERS.' WHERE user_name=\''.F_escape_sql($db, $_POST['xuser_name']).'\'';
             if ($r = F_db_query($sql, $db)) {
                 if (($m = F_db_fetch_array($r)) and checkPassword($_POST['xuser_password'], $m['user_password'])) {
+                    echo "Password worked!";
                     // sets some user's session data
                     $_SESSION['session_user_id'] = $m['user_id'];
                     $_SESSION['session_user_name'] = $m['user_name'];
